@@ -1,8 +1,8 @@
 # Hướng Dẫn Cài Đặt và Sử Dụng Hadoop & Hive 3.1.3 Trên Ubuntu
 
-**Tác giả:** Hướng dẫn thực hành  
+**Tác giả:** Trần Huy Vũ
 **Phiên bản:** 1.0  
-**Ngày cập nhật:** Tháng 12, 2025  
+**Ngày cập nhật:** 23 Tháng 12, 2025  
 
 ---
 
