@@ -38,7 +38,7 @@ Kết quả ví dụ:
 
 ### 1.2 `ls` – Liệt kê file/thư mục
 
-```
+```bash
 ls # liệt kê đơn giản
 ls -l # liệt kê chi tiết (quyền, dung lượng, ngày sửa)
 ls -a # hiện cả file ẩn (bắt đầu bằng dấu chấm .)
@@ -47,7 +47,7 @@ ls -la # kết hợp chi tiết + file ẩn
 
 
 ### 1.3 `cd` – Di chuyển thư mục
-```
+```bash
 cd ten_thu_muc # vào thư mục
 cd .. # lên 1 cấp
 cd ~ # về thư mục home (quan trọng)
@@ -58,7 +58,7 @@ cd / # về thư mục gốc
 ### 1.4 `rm` – Xóa file/thư mục
 > ⚠️ **Cảnh báo:** Lệnh `rm -rf` xóa vĩnh viễn không thể phục hồi. Luôn kiểm tra kỹ bằng `pwd` và `ls` trước khi Enter.
 
-```
+```bash
 rm file.txt # xóa 1 file
 rm -r thu_muc # xóa thư mục (hệ thống sẽ hỏi)
 rm -rf thu_muc # xóa thư mục (ép buộc, không hỏi lại)
@@ -67,7 +67,7 @@ rm -rf thu_muc # xóa thư mục (ép buộc, không hỏi lại)
 
 ### 1.5 `cat`, `nano`, `less` – Xem & Chỉnh sửa
 
-```
+```bash
 cat file.txt # in nội dung file ra màn hình
 nano file.txt # mở trình soạn thảo để sửa file
 less file.log # xem file dài, cuộn lên/xuống (nhấn q để thoát)
@@ -85,7 +85,7 @@ less file.log # xem file dài, cuộn lên/xuống (nhấn q để thoát)
 
 ### 2.2 Kiểm tra nhanh
 
-```
+```bash
 echo $HADOOP_HOME
 echo $JAVA_HOME
 which hadoop
@@ -109,14 +109,14 @@ mv pig-0.17.0 pig-0.17.0 # (Bước này tùy chọn nếu tên đã đúng)
 
 ### 3.2 Thiết lập biến môi trường
 Mở file cấu hình shell (`.bashrc`):
-```
+```bash
 nano ~/.bashrc
 ```
 
 
 Thêm nội dung sau vào cuối file:
 
-```
+```bash
 export PIG_HOME=/home/vutran/pig-0.17.0
 export PATH=$PATH:$PIG_HOME/bin
 ```
@@ -124,7 +124,7 @@ export PATH=$PATH:$PIG_HOME/bin
 
 Lưu (`Ctrl+O` -> `Enter`), thoát (`Ctrl+X`), và nạp lại cấu hình:
 
-```
+```bash
 source ~/.bashrc
 pig -version
 ```
@@ -139,7 +139,7 @@ pig -version
 
 Dùng để test logic nhanh với file nằm trên máy local, không cần bật Hadoop.
 
-```
+```bash
 pig -x local
 ```
 
@@ -159,7 +159,7 @@ jps # Kiểm tra xem có NameNode, DataNode chưa
 
 **B2: Chạy Pig**
 
-```
+```bash
 pig
 ```
 
@@ -183,14 +183,14 @@ Khi đang ở dấu nhắc `grunt>`, bạn có thể dùng các lệnh sau:
 Giả sử có file `script.pig`.
 
 **Cách 1: Chạy bên trong Grunt**
-```
+```bash
 grunt> run script.pig
 ```
 
 *(Chạy xong vẫn ở lại shell để debug tiếp)*
 
 **Cách 2: Chạy từ Terminal**
-```
+```bash
 pig script.pig
 ```
 
@@ -215,7 +215,7 @@ pig script.pig
 
 ### 6.1 LOAD – Đọc dữ liệu
 
-```
+```bash
 students = LOAD 'students.txt'
 USING PigStorage(',')
 AS (id:int, name:chararray, score:double);
@@ -225,35 +225,35 @@ AS (id:int, name:chararray, score:double);
 *   `PigStorage(',')`: Chỉ định dấu phân cách là dấu phẩy.
 
 ### 6.2 FOREACH … GENERATE – Chọn cột
-```
+```bash
 names = FOREACH students GENERATE name, score;
 ```
 
 *(Tương đương `SELECT name, score` trong SQL)*
 
 ### 6.3 FILTER – Lọc dữ liệu
-```
+```bash
 good = FILTER students BY score >= 8.0;
 ```
 
 *(Tương đương `WHERE` trong SQL)*
 
 ### 6.4 GROUP – Nhóm dữ liệu
-```
+```bash
 by_all = GROUP students ALL;
 avg = FOREACH by_all GENERATE AVG(students.score);
 ```
 
 
 ### 6.5 ORDER & LIMIT
-```
+```bash
 sorted = ORDER students BY score DESC;
 top2 = LIMIT sorted 2;
 ```
 
 
 ### 6.6 JOIN – Nối bảng
-```
+```bash
 joined = JOIN students BY id, classes BY id;
 ```
 
@@ -276,12 +276,12 @@ EOF
 
 
 **B2: Chạy Pig local và xử lý**
-```
+```bash
 pig -x local
 ```
 
 Trong `grunt>`:
-```
+```bash
 students = LOAD 'students.txt' USING PigStorage(',') AS (id:int, name:chararray, score:double);
 good = FILTER students BY score >= 8.0;
 result = FOREACH good GENERATE name, score;
@@ -291,14 +291,14 @@ DUMP result;
 
 ### 7.2 Bài 2 – MapReduce mode: Tính điểm trung bình
 **B1: Đẩy file lên HDFS**
-```
+```bash
 hdfs dfs -mkdir -p /user/vutran/pigdata
 hdfs dfs -put ~/students.txt /user/vutran/pigdata/
 ```
 
 
 **B2: Viết script `avg_score.pig`**
-```
+```bash
 students = LOAD 'hdfs:/user/vutran/pigdata/students.txt'
 USING PigStorage(',')
 AS (id:int, name:chararray, score:double);
@@ -311,14 +311,14 @@ DUMP avg_score;
 
 
 **B3: Chạy script**
-```
+```bash
 pig avg_score.pig
 ```
 
 
 ### 7.3 Bài 3 – JOIN 2 bảng
 **B1: Tạo và upload file lớp học**
-```
+```bash
 cat > classes.txt << 'EOF'
 1,Big Data
 2,AI
@@ -331,7 +331,7 @@ hdfs dfs -put classes.txt /user/vutran/pigdata/
 
 **B2: Viết script `join_students_classes.pig`**
 
-```
+```bash
 students = LOAD 'hdfs:/user/vutran/pigdata/students.txt' USING PigStorage(',') AS (id:int, name:chararray, score:double);
 classes = LOAD 'hdfs:/user/vutran/pigdata/classes.txt' USING PigStorage(',') AS (id:int, classname:chararray);
 
@@ -346,7 +346,7 @@ DUMP result;
 ```
 
 **B3: Chạy**
-```
+```bash
 pig join_students_classes.pig
 ```
 
@@ -365,7 +365,7 @@ pig join_students_classes.pig
 ### 8.3 Input path does not exist
 *   **Nguyên nhân:** File chưa được upload lên HDFS hoặc sai đường dẫn.
 *   **Khắc phục:** Kiểm tra file trên HDFS bằng lệnh:
-    ```
+    ```bash
     hdfs dfs -ls /user/vutran/pigdata
     ```
 
@@ -378,7 +378,7 @@ pig join_students_classes.pig
 ---
 
 ## 9. Thói quen làm việc an toàn
-1.  👀 **Nhìn trước khi xóa:** Luôn gõ `pwd` và `ls` để xác nhận vị trí trước khi dùng `rm -rf`.
-2.  💾 **Backup:** Sao lưu các script `.pig` và file cấu hình quan trọng.
-3.  📝 **Ghi chú:** Tạo file `notes.md` ghi lại các lệnh hay quên.
-4.  🐞 **Debug:** Khi gặp lỗi, dùng `describe` và `illustrate` trong Grunt shell để hiểu luồng dữ liệu đang chạy sai ở đâu.
+1.  **Nhìn trước khi xóa:** Luôn gõ `pwd` và `ls` để xác nhận vị trí trước khi dùng `rm -rf`.
+2.  **Backup:** Sao lưu các script `.pig` và file cấu hình quan trọng.
+3.  **Ghi chú:** Tạo file `notes.md` ghi lại các lệnh hay quên.
+4.  **Debug:** Khi gặp lỗi, dùng `describe` và `illustrate` trong Grunt shell để hiểu luồng dữ liệu đang chạy sai ở đâu.
