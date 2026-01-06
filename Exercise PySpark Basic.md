@@ -1,20 +1,10 @@
----
-title: "GIẢI BÀI TẬP PYSPARK – THAO TÁC DATAFRAME VÀ SQL"
-author: "(Điền tên bạn)"
-version: "1.0"
-updated: "2026-01-06"
-tags: [pyspark, spark, dataframe, sql, exercises]
----
-
-<div align="center">
-
 # GIẢI BÀI TẬP PYSPARK – THAO TÁC DATAFRAME VÀ SQL
 
 *Tài liệu tham khảo lời giải chi tiết cho các bài tập thực hành thao tác dữ liệu Supermarket Sales.*
 
-</div>
 
-**Tác giả:** Điền tên bạn  
+**Tác giả:** Trần Huy Vũ
+
 **Phiên bản:** 1.0  
 **Ngày cập nhật:** 2026-01-06
 
