@@ -108,57 +108,88 @@ print(f"Correlation: {correlation}")
 
 ---
 
-## Phần 3: GroupBy & Aggregation
-
 ```python
-# 1. GroupBy Branch: Sum Qty, Sum cogs, Count
+from pyspark.sql.functions import col, sum as F_sum, avg as F_avg, count as F_count, rank, to_date
+from pyspark.sql.window import Window
+
+# 1. Nhóm theo Branch: tính tổng Quantity, tổng cogs và đếm số lượng hóa đơn
+print("--- Câu 1: Thống kê theo Branch ---")
 df_sales.groupBy("Branch").agg(
     F_sum("Quantity").alias("Total_Qty"),
     F_sum("cogs").alias("Total_COGS"),
-    F_count("*").alias("Count")
+    F_count("*").alias("Num_Invoices")
 ).show()
 
-# 2. Top 3 City theo Total
-df_sales.groupBy("City").agg(F_sum("Total").alias("Revenue")) \
-    .orderBy(col("Revenue").desc()).limit(3).show()
+# 2. Nhóm theo City: tính tổng Total, sort giảm dần, lấy top 3
+print("--- Câu 2: Top 3 City doanh thu cao nhất ---")
+df_sales.groupBy("City").agg(
+    F_sum("Total").alias("Total_Revenue")
+).orderBy(col("Total_Revenue").desc()).limit(3).show()
 
-# 3. Product line bán chạy nhất (theo Qty)
-df_sales.groupBy("Product line").agg(F_sum("Quantity").alias("Total_Qty")) \
-    .orderBy(col("Total_Qty").desc()).limit(1).show()
+# 3. Nhóm theo Product line: tìm dòng sản phẩm bán chạy nhất (theo Quantity)
+print("--- Câu 3: Dòng sản phẩm bán chạy nhất ---")
+df_sales.groupBy("Product line").agg(
+    F_sum("Quantity").alias("Total_Qty")
+).orderBy(col("Total_Qty").desc()).limit(1).show()
 
-# 4. GroupBy Payment: Sum & Avg Total
+# 4. Nhóm theo Payment: tổng Total, avg Total, sắp xếp theo tổng giảm dần
+print("--- Câu 4: Thống kê theo Payment ---")
 df_sales.groupBy("Payment").agg(
-    F_sum("Total").alias("Total_Revenue"),
-    F_avg("Total").alias("Avg_Revenue")
-).orderBy(col("Total_Revenue").desc()).show()
+    F_sum("Total").alias("Total_Rev"),
+    F_avg("Total").alias("Avg_Rev")
+).orderBy(col("Total_Rev").desc()).show()
 
-# 5. Customer type stats
+# 5. Nhóm theo Customer type: tổng Total, avg Unit price, count hóa đơn
+print("--- Câu 5: Thống kê theo loại khách hàng ---")
 df_sales.groupBy("Customer type").agg(
     F_sum("Total").alias("Total_Rev"),
     F_avg("Unit price").alias("Avg_Price"),
-    F_count("*").alias("Count")
+    F_count("*").alias("Num_Invoices")
 ).show()
 
-# 6. Branch + Gender
+# 6. Nhóm theo Branch & Gender: tổng Total, số hóa đơn; sort theo tổng Total giảm
+print("--- Câu 6: Phân tích đa chiều Branch + Gender ---")
 df_sales.groupBy("Branch", "Gender").agg(
     F_sum("Total").alias("Total_Rev"),
-    F_count("*").alias("Count")
+    F_count("*").alias("Num_Invoices")
 ).orderBy(col("Total_Rev").desc()).show()
 
-# 7. City + Payment phổ biến nhất
-df_sales.groupBy("City", "Payment").count().orderBy(col("count").desc()).show()
+# 7. (NÂNG CAO) Nhóm City & Payment: Tìm phương thức phổ biến nhất TẠI MỖI City
+# Logic chuẩn: Phải dùng Window Function để xếp hạng Payment trong nội bộ từng City
+print("--- Câu 7: Phương thức thanh toán phổ biến nhất tại mỗi City ---")
+# B1: Đếm số lượng
+payment_counts = df_sales.groupBy("City", "Payment").count()
+# B2: Xếp hạng count giảm dần trong từng City
+window_spec = Window.partitionBy("City").orderBy(col("count").desc())
+# B3: Lọc lấy hạng 1
+payment_counts.withColumn("rank", rank().over(window_spec)) \
+              .filter(col("rank") == 1) \
+              .drop("rank") \
+              .show()
 
-# 8. Ngày doanh thu cao nhất
-df_sales.groupBy("Date").agg(F_sum("Total").alias("Daily_Rev")) \
-    .orderBy(col("Daily_Rev").desc()).limit(1).show()
+# 8. Nhóm theo Date: tìm ngày doanh thu cao nhất
+# Cần convert string Date sang kiểu Date thật để group đúng ngày
+print("--- Câu 8: Ngày có doanh thu cao nhất ---")
+df_sales.withColumn("RealDate", to_date(col("Date"), "M/d/yyyy")) \
+  .groupBy("RealDate").agg(
+      F_sum("Total").alias("Daily_Rev")
+  ).orderBy(col("Daily_Rev").desc()).limit(1).show()
 
-# 9. Member -> Product line revenue
+# 9. Lọc Member -> GroupBy Product line -> Tổng Total
+print("--- Câu 9: Doanh thu Product line chỉ tính riêng Member ---")
 df_sales.filter(col("Customer type") == "Member") \
-    .groupBy("Product line").agg(F_sum("Total").alias("Member_Revenue")).show()
+  .groupBy("Product line").agg(
+      F_sum("Total").alias("Member_Total_Rev")
+  ).show()
 
-# 10. Top 5 hóa đơn theo Gross_Profit
-df_sales.select("Invoice ID", "Branch", "Gross_Profit") \
-    .orderBy(col("Gross_Profit").desc()).limit(5).show()
+# 10. Top 5 hóa đơn có Gross_Profit cao nhất
+# Gross_Profit = Total - cogs
+print("--- Câu 10: Top 5 hóa đơn lợi nhuận gộp cao nhất ---")
+df_sales.withColumn("Gross_Profit", col("Total") - col("cogs")) \
+  .select("Invoice ID", "Branch", "Gross_Profit") \
+  .orderBy(col("Gross_Profit").desc()) \
+  .limit(5) \
+  .show()
 ```
 
 ---
