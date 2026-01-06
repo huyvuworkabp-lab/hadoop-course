@@ -1,7 +1,34 @@
-# **BÀI THỰC HÀNH PYSPARK - SUPERMARKET SALES**
+# BÀI THỰC HÀNH PYSPARK CƠ BẢN
+
+**Tác giả:** Trần Huy Vũ
+
+**Phiên bản:** 1.0  
+**Ngày cập nhật:** 06 Tháng 01, 2026 
+
+---
+
+## Mục lục
+- [Yêu cầu chung](#yêu-cầu-chung)
+- [1. Setup Spark](#1-setup-spark-colab-ready)
+- [2. Tải file CSV](#2-tải-file-csv-3-cách---chọn-1)
+  - [Cách 1: Upload file local](#cách-1-upload-file-local)
+  - [Cách 2: Google Drive mount](#cách-2-google-drive-mount)
+  - [Cách 3: Direct Drive link](#cách-3-direct-drive-link-file-id-bạn)
+- [3. Xử lý DataFrame](#3-xử-lý-dataframe-cơ-bản)
+- [4. Thống kê cơ bản](#4-thống-kê-cơ-bản-với-spark)
+- [5. GroupBy & Aggregation](#5-groupby--aggregation)
+- [6. Spark SQL](#6-spark-sql-cơ-bản)
+- [7. Tổng hợp bài tập](#7-tổng-hợp-bài-tập)
+
+---
+
+## Yêu cầu chung
+- Google Colab hoặc môi trường có Java + PySpark.
+- File `Supermarket.csv` theo đúng đường dẫn ở phần “Tải file”.
 
 Core dataset: File CSV (Invoice ID, Branch, City, Customer type, Gender, Product line, Unit price, Quantity, Date, Time, Payment, cogs)
 
+---
 ## **1. Setup Spark (Colab-ready)**
 
 ```python
@@ -16,7 +43,7 @@ from pyspark.sql.functions import col, sum as F_sum, avg as F_avg, count as F_co
 spark = SparkSession.builder.appName("Supermarket-Sales").getOrCreate()
 spark
 ```
-
+---
 ## **2. Tải file CSV (3 cách - chọn 1)**
 
 ### **Cách 1: Upload file local**
@@ -53,7 +80,7 @@ Kiểm tra schema:
 df_sales.printSchema()
 print("Total rows:", df_sales.count())
 ```
-
+---
 ## **3. Xử lý DataFrame cơ bản**
 
 ```python
@@ -68,7 +95,7 @@ df_sales.withColumn("Total", col("Unit price") * col("Quantity")) \
     .select("Invoice ID", "Product line", "Total") \
     .show(5)
 ```
-
+---
 ## **4. Thống kê cơ bản với Spark**
 
 ```python
@@ -88,7 +115,7 @@ df_sales.groupBy("Payment").count().show()
 df_sales.filter(col("Gender") == "Female") \
     .describe(["Unit price", "cogs"]).show()
 ```
-
+---
 ## **5. GroupBy & Aggregation**
 
 ```python
@@ -109,7 +136,7 @@ df_sales.groupBy("Product line", "Gender") \
         round(F_avg("cogs"), 2).alias("Avg_COGS")
     ).show(10)
 ```
-
+---
 ## **6. Spark SQL cơ bản**
 
 ```python
@@ -137,7 +164,7 @@ spark.sql("""
     LIMIT 5
 """).show()
 ```
-
+---
 ## **7. TỔNG HỢP BÀI TẬP**
 
 ### **Bài 1: Tạo cột Gross Profit = Total - cogs, top 5 Branch theo Gross Profit**
