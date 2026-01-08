@@ -1,26 +1,19 @@
----
-title: "BÀI THỰC HÀNH PYSPARK: PHÂN TÍCH DỮ LIỆU SIÊU THỊ"
-description: "Hướng dẫn chi tiết từ Setup Spark → Data Cleaning → K-Means Clustering → Linear Regression dự báo doanh thu (Google Colab ready)"
-author: "Điền tên bạn"
-date: "2026-01-08"
-version: "1.0"
-tags: [pyspark, spark, machine-learning, kmeans, linear-regression, data-analysis]
----
-
 <div align="center">
 
-# BÀI THỰC HÀNH PYSPARK  
-## PHÂN TÍCH DỮ LIỆU SIÊU THỊ
+# Data Analysis with Hadoop Spark
+## Case Study: PHÂN TÍCH DỮ LIỆU SIÊU THỊ
 
 [![Python](https://img.shields.io/badge/Python-3.8+-3776AB?style=for-the-badge&logo=python&logoColor=white)](https://python.org)
 [![PySpark](https://img.shields.io/badge/PySpark-3.5+-F8961E?style=for-the-badge&logo=apachespark&logoColor=white)](https://spark.apache.org)
 [![Google Colab](https://img.shields.io/badge/Google%20Colab-FEE71C?style=for-the-badge&logo=google-colab&logoColor=white)](https://colab.research.google.com)
+</div>
 
 **Dataset**: Supermarket Sales (1000+ giao dịch, 17 cột: Invoice ID, Branch, City, Customer type, Gender, Product line, Unit price, Quantity, Date, Time, Payment, cogs, Total, Tax 5%, Rating...)
 
+
 **Mục tiêu**: Phân tích dữ liệu bán hàng, **phân cụm khách hàng (K-Means)**, **dự báo doanh thu (Linear Regression)**.
 
-</div>
+
 
 ---
 
@@ -339,14 +332,3 @@ spark.stop()
 ```
 
 ---
-
-<div align="center">
-
-**🎉 Hoàn thành!**
-
-> **Next Steps**:
-> - Visualize clusters với `matplotlib/seaborn`
-> - Deploy model với MLflow
-> - Tối ưu K-Means với Elbow Method
-
-</div>
