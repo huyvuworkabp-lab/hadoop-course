@@ -1,14 +1,3 @@
----
-title: "BÀI THỰC HÀNH PYSPARK: PHÂN CỤM KHÁCH HÀNG (CUSTOMER SEGMENTATION)"
-description: "Hướng dẫn hoàn chỉnh: Data Analysis → Feature Engineering → K-Means Clustering → Visualization (Google Colab ready)"
-author: "Điền tên bạn"
-date: "2026-01-10"
-version: "1.0"
-tags: [pyspark, spark, kmeans, customer-segmentation, data-analysis, ml]
----
-
-<div align="center">
-
 # PYSPARK CUSTOMER SEGMENTATION  
 ## K-MEANS CLUSTERING
 
@@ -279,14 +268,3 @@ plt.show()
 ```python
 spark.stop()  # Giải phóng tài nguyên Spark
 ```
-
-<div align="center">
-
-**🎉 Hoàn thành Customer Segmentation!**
-
-> **Next Steps**:
-> - Export clusters: `df_clustered.coalesce(1).write.csv("clusters")`
-> - Thử k=3,5,6 → so sánh Silhouette Score
-> - Thêm features: Spending Score, Product Category
-
-</div>
